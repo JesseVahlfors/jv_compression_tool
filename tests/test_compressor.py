@@ -1,0 +1,2 @@
+import pytest
+from compression_tool.compressor import compress
