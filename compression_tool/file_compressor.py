@@ -3,12 +3,16 @@ from compression_tool.compressor import compress
 import sys
 
 def compress_file(path: str) -> bytes:
+    path = Path(path)
+
     with open(path, "rb") as file:
         data = file.read() #Using "rb" mode to read the file as bytes
 
     compressed_data = compress(data)
 
-    with open(path + ".huff", "wb") as out:
+    output_path = path.with_suffix('.huff')
+
+    with open(output_path, "wb") as out:
         out.write(compressed_data)
 
 if __name__ == "__main__":
