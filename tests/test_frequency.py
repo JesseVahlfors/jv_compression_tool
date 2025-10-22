@@ -17,8 +17,8 @@ def test_frequency_with_file(test_data):
     freq = count_frequencies(test_data)
     
     expected = {
-        ord(b'X'): 333,  # Replace 'X' with actual byte values from test.txt
-        ord(b't'): 223000, # Replace 't' with actual byte values from test.txt
+        ord('X'): 333,  # Replace 'X' with actual byte values from test.txt
+        ord('t'): 223000, # Replace 't' with actual byte values from test.txt
     }
 
     for char_code, count in expected.items():
