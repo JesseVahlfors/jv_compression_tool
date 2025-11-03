@@ -11,9 +11,9 @@ def sift_down(heap, i):
 
     smallest = i 
 
-    if left_index < n and heap[left_index][0] < heap[smallest][0]: 
+    if left_index < n and heap[left_index] < heap[smallest]: 
         smallest = left_index
-    if right_index < n and heap[right_index][0] < heap[smallest][0]:
+    if right_index < n and heap[right_index] < heap[smallest]:
         smallest = right_index
 
     if smallest != i:
