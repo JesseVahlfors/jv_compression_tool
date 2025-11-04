@@ -39,8 +39,38 @@ def test_check_min_heap_valid():
         LeafNode(symbol=b'e', weight=6),
         LeafNode(symbol=b'f', weight=7),
     ]
+    incorrect_heap = [
+        LeafNode(symbol=b'a', weight=2),
+        LeafNode(symbol=b'b', weight=30),
+        LeafNode(symbol=b'c', weight=4),
+        LeafNode(symbol=b'd', weight=5),
+        LeafNode(symbol=b'e', weight=6),
+        LeafNode(symbol=b'f', weight=7),
+    ]
+    equal = [
+        LeafNode(symbol=b'a', weight=2),
+        LeafNode(symbol=b'b', weight=2),
+        LeafNode(symbol=b'c', weight=2),
+    ]
+    right_bad = [
+        LeafNode(symbol=b'a', weight=2),
+        LeafNode(symbol=b'b', weight=5),
+        LeafNode(symbol=b'c', weight=1),   
+    ]
+    shuffled_valid = [
+        LeafNode(symbol=b'a', weight=1),
+        LeafNode(symbol=b'b', weight=3),
+        LeafNode(symbol=b'c', weight=4),
+        LeafNode(symbol=b'd', weight=7),
+    ]
 
+    assert check_min_heap_valid([]) is True
+    assert check_min_heap_valid([LeafNode(symbol=b'b', weight=3)])
     assert check_min_heap_valid(heap) is True
+    assert check_min_heap_valid(incorrect_heap) is False
+    assert check_min_heap_valid(equal) is True
+    assert check_min_heap_valid(right_bad) is False
+    assert check_min_heap_valid(shuffled_valid) is True
 
 def test_sift_up():
     heap = [

@@ -1,5 +1,5 @@
 from tree import Node, LeafNode, InternalNode
-from heapify import build_min_heap
+from compression_tool.utils.heapify import build_min_heap
 # Convert freq → list of LeafNodes → heapify → loop merge.
 
 def build_tree(freq: dict[int, int]) -> Node | None:
