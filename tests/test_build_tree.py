@@ -1,3 +1,4 @@
+import pytest
 from compression_tool.build_tree import build_tree
 from compression_tool.tree import LeafNode, InternalNode
 
