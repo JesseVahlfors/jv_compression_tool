@@ -37,10 +37,10 @@ def check_min_heap_valid(heap: list) -> bool:
     for i in range(n//2):
         left, right = 2 * i + 1, 2 * i + 2
 
-        if left < n and heap[left] < heap[i]: 
+        if left < n and heap[left].weight < heap[i].weight: 
             #as long as the length of the list is higher than the left index do the comparison
             return False
-        if right < n and heap[right] < heap[i]:
+        if right < n and heap[right].weight < heap[i].weight:
             return False
     
     return True
