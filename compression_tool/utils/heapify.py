@@ -29,14 +29,21 @@ def sift_up(heap: list[LeafNode], idx: int) -> int:
     if idx == 0:
         return 0
     
-    parent = (idx - 1 ) // 2
-    while idx > 0 and parent >= 0:
-        if heap[idx] < heap[parent]:
+    while idx > 0:
+        parent = (idx - 1) // 2
+        if heap[idx].weight < heap[parent].weight:
             heap[parent], heap[idx] = heap[idx], heap[parent]
             idx = parent
+        elif heap[idx].weight == heap[parent].weight:
+            if heap[idx].symbol < heap[parent].symbol:
+                heap[parent], heap[idx] = heap[idx], heap[parent]
+                idx = parent
+            else:
+                break
         else:
             break
-        return idx
+
+    return idx
     
 
 def pop_min(heap: list):
