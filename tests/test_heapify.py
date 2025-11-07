@@ -108,7 +108,19 @@ def test_sift_up():
     assert final_idx == 0
     assert check_min_heap_valid(multi_level_bubble)
     assert multi_level_bubble[0].symbol == ord('f') and multi_level_bubble[0].weight == 1
-    
+
+    tie_break = [
+        LeafNode(symbol=ord('b'), weight=2),
+        LeafNode(symbol=ord('c'), weight=2),
+        LeafNode(symbol=ord('d'), weight=3),
+    ]
+    tie_break.append(LeafNode(ord('a'), weight=2))
+    final_idx = sift_up(tie_break, 3)
+    assert final_idx == 0
+    assert tie_break[3].symbol == ord('c') and tie_break[0].symbol == ord('a')
+    assert check_min_heap_valid(tie_break)
+
+
 
 
 
