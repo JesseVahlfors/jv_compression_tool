@@ -96,6 +96,20 @@ def test_sift_up():
     assert single_swap[1].weight == 3
     assert check_min_heap_valid(single_swap)
 
+    multi_level_bubble = [
+        LeafNode(symbol=ord('a'), weight=3),
+        LeafNode(symbol=ord('b'), weight=5),
+        LeafNode(symbol=ord('c'), weight=6),
+        LeafNode(symbol=ord('d'), weight=7),
+        LeafNode(symbol=ord('e'), weight=8),
+    ]
+    multi_level_bubble.append(LeafNode(ord('f'), 1))
+    final_idx = sift_up(multi_level_bubble, 5)
+    assert final_idx == 0
+    assert check_min_heap_valid(multi_level_bubble)
+    assert multi_level_bubble[0].symbol == ord('f') and multi_level_bubble[0].weight == 1
+    
+
 
 
 def test_pop_min():
