@@ -21,12 +21,22 @@ def sift_down(heap: list, i: int):
         heap[i], heap[smallest] = heap[smallest], heap[i]
         sift_down(heap, smallest)
 
-def sift_up(heap: list[LeafNode], i: int) -> int:
+def sift_up(heap: list[LeafNode], idx: int) -> int:
     #triggers after push insert, pushes towards the root, compares weights and uses symbol integer as tiebreaker, return final index and raise error if out of range.
-    if i < 0 or i >= len(heap):
-        raise IndexError("The index is out of range ({i})")
-    if i == 0:
+    if idx < 0 or idx >= len(heap):
+        raise IndexError("The index is out of range ({idx})")
+    
+    if idx == 0:
         return 0
+    
+    parent = (idx - 1 ) // 2
+    while idx > 0 and parent >= 0:
+        if heap[idx] < heap[parent]:
+            heap[parent], heap[idx] = heap[idx], heap[parent]
+            idx = parent
+        else:
+            break
+        return idx
     
 
 def pop_min(heap: list):
