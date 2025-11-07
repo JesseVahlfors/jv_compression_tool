@@ -120,8 +120,25 @@ def test_sift_up():
     assert tie_break[3].symbol == ord('c') and tie_break[0].symbol == ord('a')
     assert check_min_heap_valid(tie_break)
 
+    out_of_range = [
+        LeafNode(ord('a'), 2),
+        LeafNode(ord('b'), 3),
+        LeafNode(ord('c'), 4)
+    ]
+    with pytest.raises(IndexError): sift_up(out_of_range, len(out_of_range))
+    with pytest.raises(IndexError): sift_up(out_of_range, -1)
 
-
+    no_swap_when_equal = [
+        LeafNode(symbol=ord('a'), weight=2),
+        LeafNode(symbol=ord('b'), weight=2),
+        LeafNode(symbol=ord('f'), weight=3),
+    ]
+    no_swap_when_equal.append(LeafNode(ord('c'), weight=2))
+    final_idx = sift_up(no_swap_when_equal, 3)
+    assert final_idx == 3
+    assert no_swap_when_equal[1].symbol == ord('b') and no_swap_when_equal[3].symbol == ord('c')
+    assert check_min_heap_valid(no_swap_when_equal)
+    
 
 
 def test_pop_min():
