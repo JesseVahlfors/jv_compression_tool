@@ -77,21 +77,25 @@ def test_check_min_heap_valid():
 
 def test_sift_up():
     heap = [
-        LeafNode(ord('a'), 1),
+        LeafNode(ord('a'), 2),
         LeafNode(ord('b'), 3),
-        LeafNode(ord('c'), 6),
-        LeafNode(ord('d'), 8),
-        LeafNode(ord('e'), 10),
-        LeafNode(ord('f'), 12),
-        LeafNode(ord('g'), 15),
+        LeafNode(ord('c'), 4)
     ]
-    new_node = LeafNode(ord('h'), 2)
-    heap.append(new_node)
-    sift_up(heap, len(heap) - 1)
-    
-    assert heap[0].weight == 1
-    assert heap[1].weight == 2
+    final_idx = sift_up(heap, 0)
+    assert final_idx == 0
     assert check_min_heap_valid(heap)
+
+    single_swap = [
+        LeafNode(ord('a'), 2),
+        LeafNode(ord('b'), 5),
+        LeafNode(ord('c'), 6)
+    ]
+    single_swap.append(LeafNode(ord('d'), 3))
+    final_idx = sift_up(single_swap, 3)
+    assert final_idx == 1
+    assert single_swap[1].weight == 3
+    assert check_min_heap_valid(single_swap)
+
 
 
 def test_pop_min():

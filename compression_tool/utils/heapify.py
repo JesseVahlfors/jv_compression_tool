@@ -1,3 +1,4 @@
+from compression_tool.tree import LeafNode
 
 def build_min_heap(heap: list) -> list:
     for i in range((len(heap)//2) -1, -1, -1): # start from last non-leaf node, stop at idx 0, step -1 meaning negative steps.
@@ -20,8 +21,13 @@ def sift_down(heap: list, i: int):
         heap[i], heap[smallest] = heap[smallest], heap[i]
         sift_down(heap, smallest)
 
-def sift_up(heap: list, i: int):
-    pass
+def sift_up(heap: list[LeafNode], i: int) -> int:
+    #triggers after push insert, pushes towards the root, compares weights and uses symbol integer as tiebreaker, return final index and raise error if out of range.
+    if i < 0 or i >= len(heap):
+        raise IndexError("The index is out of range ({i})")
+    if i == 0:
+        return 0
+    
 
 def pop_min(heap: list):
     pass
