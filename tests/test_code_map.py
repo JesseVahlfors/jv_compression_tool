@@ -11,3 +11,9 @@ def test_single_symbol():
 
     assert code_map(root) == {97: 0}
 
+def test_two_symbols():
+    root = build_tree({97: 3, 98: 2})
+
+    assert 97 in root and 98 in root
+    assert len(root[97]) == 1 and len(root[98]) == 1
+    assert root[97] == 0 and root[98] == 1
