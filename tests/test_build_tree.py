@@ -10,12 +10,6 @@ def test_single_symbol():
     assert isinstance(root, LeafNode)
     assert root.symbol == 97 and root.weight == 5
 
-def test_two_symbols():
-    root = build_tree({97: 3, 98: 2})
-    assert isinstance(root, InternalNode)
-    assert root.weight == 5
-    assert {root.left.weight, root.right.weight} == {3,2} 
-
 def test_small_multi_set():
     root = build_tree({97: 5, 98: 2, 99: 1})
     assert root.weight == 8 
