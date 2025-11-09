@@ -95,7 +95,8 @@ def test_sift_up_multi_level_bubble():
     assert multi_level_bubble[0].symbol == ord('f') and multi_level_bubble[0].weight == 1
 
 def test_sift_up_tie_break_symbol():
-    tie_break = [ n(ord('a'), 2), n(ord('c'), 2), n(ord('b'), 2), n(ord('d'), 3) ]
+    tie_break = [ n(ord('a'), 2), n(ord('c'), 2), n(ord('d'), 3) ]
+    tie_break.append(n(ord('b'),2))
     final_idx = sift_up(tie_break, 3)
     assert final_idx == 1
     assert tie_break[3].symbol == ord('c') and tie_break[1].symbol == ord('b')
