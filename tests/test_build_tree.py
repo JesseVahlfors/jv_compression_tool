@@ -19,3 +19,7 @@ def test_two_symbols():
 def test_small_multi_set():
     root = build_tree({97: 5, 98: 2, 99: 1})
     assert root.weight == 8 
+
+def test_three_equals_total_only():
+    root = build_tree({97: 1, 98: 1, 99: 1})
+    assert root.weight == 3
