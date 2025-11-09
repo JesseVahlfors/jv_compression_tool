@@ -14,6 +14,7 @@ def test_heapify_simple():
             n('d', 13),
             n('b', 9),
     ]
+
     heap = build_min_heap(heap)
 
     assert heap[0].weight == min(node.weight for node in heap)
@@ -34,6 +35,48 @@ def test_sift_down():
     assert heap[0].weight == 1
     assert check_min_heap_valid(heap)
 
+def test_sift_down_on_leaf():
+    heap = [
+        n('a', 2),
+        n('b', 3),
+        n('c', 4),
+        n('d', 5),
+        n('e', 6),
+        n('f', 7),
+    ]
+    i = len(heap) -1
+
+    sift_down(heap, i)
+
+    assert check_min_heap_valid(heap)
+
+def test_sift_down_picks_smaller_child():
+    heap = [
+        n('a', 5),
+        n('b', 4),
+        n('c', 3),
+    ]
+
+    sift_down(heap, 0)
+
+    assert heap[0].weight == 3
+    assert check_min_heap_valid(heap)
+
+def test_sift_down_picks_smaller_child_with_symbol():
+    heap = [
+        n('a', 5),
+        n('c', 4),
+        n('b', 4),
+        n('e', 6),
+        n('f', 7),
+    ]
+
+    sift_down(heap, 0)
+
+    assert heap[0].symbol == ord('b')
+    assert check_min_heap_valid(heap)
+
+
 
 def test_check_min_heap_valid():
     heap = [
@@ -53,9 +96,7 @@ def test_check_min_heap_valid():
         n('f', 7),
     ]
     equal = [ n('a', 2), n('b', 2), n('c', 2), ]
-
     right_bad = [ n('a', 2), n('b', 5), n('c', 1), ]
-
     shuffled_valid = [ n('a', 1), n('b', 3), n('c', 4), n('d', 7), ]   
 
     assert check_min_heap_valid([]) is True
@@ -69,14 +110,18 @@ def test_check_min_heap_valid():
 
 def test_sift_up_root_noop():
     heap = [ n('a', 2), n('b', 3), n('c', 4) ]
+
     final_idx = sift_up(heap, 0)
+
     assert final_idx == 0
     assert check_min_heap_valid(heap)
 
 def test_sift_up_single_swap():
     single_swap = [ n('a', 2), n('b', 5), n('c', 6) ]
     single_swap.append(n('d', 3))
+
     final_idx = sift_up(single_swap, 3)
+
     assert final_idx == 1
     assert single_swap[1].weight == 3
     assert check_min_heap_valid(single_swap)
@@ -90,7 +135,9 @@ def test_sift_up_multi_level_bubble():
         n('e', 8),
     ]
     multi_level_bubble.append(n('f', 1))
+
     final_idx = sift_up(multi_level_bubble, 5)
+
     assert final_idx == 0
     assert check_min_heap_valid(multi_level_bubble)
     assert multi_level_bubble[0].symbol == ord('f') and multi_level_bubble[0].weight == 1
@@ -98,26 +145,32 @@ def test_sift_up_multi_level_bubble():
 def test_sift_up_tie_break_symbol():
     tie_break = [ n('a', 2), n('c', 2), n('d', 3) ]
     tie_break.append(n('b',2))
+
     final_idx = sift_up(tie_break, 3)
+
     assert final_idx == 1
     assert tie_break[3].symbol == ord('c') and tie_break[1].symbol == ord('b')
     assert check_min_heap_valid(tie_break)
 
 def test_sift_up_out_of_range_raises():
     out_of_range = [ n('a', 2), n('b', 3), n('c', 4) ]
+
     with pytest.raises(IndexError): sift_up(out_of_range, len(out_of_range))
     with pytest.raises(IndexError): sift_up(out_of_range, -1)
 
 def test_sift_up_no_swap_when_equal():
     no_swap_when_equal = [ n('a', 2), n('b', 2), n('f', 3) ]
     no_swap_when_equal.append(n('c', 2))
+
     final_idx = sift_up(no_swap_when_equal, 3)
+
     assert final_idx == 3
     assert no_swap_when_equal[1].symbol == ord('b') and no_swap_when_equal[3].symbol == ord('c')
     assert check_min_heap_valid(no_swap_when_equal)
 
 def test_comes_before_weight_then_symbol():
     a,b,c =  n('a', 2), n('b', 2), n('c', 3)
+
     assert comes_before(a, b)          # same weight, smaller symbol
     assert not comes_before(b, a)
     assert comes_before(a, c)          # smaller weight wins
@@ -125,6 +178,7 @@ def test_comes_before_weight_then_symbol():
     
 def test_pop_min_empty_raises():
     heap = []
+
     with pytest.raises(IndexError):
         pop_min(heap)
 
@@ -157,8 +211,8 @@ def test_pop_min_tie_break():
 
 def test_pop_min_pops_in_order():
     heap = [n('d',4), n('a',2), n('c',2), n('b',2), n('e',5), n('f',3)]
-    build_min_heap(heap)
 
+    build_min_heap(heap)
     popped = []
     while len(heap) > 0:
         popped.append(pop_min(heap))
@@ -172,6 +226,7 @@ def test_heap_push():
     node = n('d', 3)
 
     final_idx = heap_push(heap, node)
+
     assert final_idx == 1
     assert (heap[0].symbol, heap[0].weight) == (ord('a'), 2)
     assert (heap[1].symbol, heap[1].weight) == (ord('d'), 3) 
@@ -183,6 +238,7 @@ def test_multi_level_bubble_push():
     node = n('e', 1)
     
     final_idx = heap_push(heap, node)
+    
     assert final_idx == 0
     assert (heap[0].symbol, heap[0].weight) == (ord('e'),1)
     assert check_min_heap_valid(heap)

@@ -6,7 +6,12 @@ def build_min_heap(heap: list[Node]) -> list:
     return heap
 
 def sift_down(heap: list[Node], i: int):
-    n = len(heap) 
+    n = len(heap)
+    if i < 0 or i >= n:
+        raise IndexError(f"The index is out of range ({i})")
+    if i == n//2:
+        return
+    
     left_index = i*2 + 1 
     right_index = i*2 + 2 
     smallest = i 
