@@ -1,4 +1,4 @@
-from compression_tool.tree import LeafNode
+from compression_tool.tree import Node
 
 def build_min_heap(heap: list) -> list:
     for i in range((len(heap)//2) -1, -1, -1): # start from last non-leaf node, stop at idx 0, step -1 meaning negative steps.
@@ -21,35 +21,32 @@ def sift_down(heap: list, i: int):
         heap[i], heap[smallest] = heap[smallest], heap[i]
         sift_down(heap, smallest)
 
-def sift_up(heap: list[LeafNode], idx: int) -> int:
+def sift_up(heap: list[Node], idx: int) -> int:
     #triggers after push insert, pushes towards the root, compares weights and uses symbol integer as tiebreaker, return final index and raise error if out of range.
     if idx < 0 or idx >= len(heap):
-        raise IndexError("The index is out of range ({idx})")
+        raise IndexError(f"The index is out of range ({idx})")
     
     if idx == 0:
         return 0
     
     while idx > 0:
         parent = (idx - 1) // 2
-        if heap[idx].weight < heap[parent].weight:
+        if comes_before(heap[idx], heap[parent]):
             heap[parent], heap[idx] = heap[idx], heap[parent]
             idx = parent
-        elif heap[idx].weight == heap[parent].weight:
-            if heap[idx].symbol < heap[parent].symbol:
-                heap[parent], heap[idx] = heap[idx], heap[parent]
-                idx = parent
-            else:
-                break
         else:
             break
 
     return idx
+
+def comes_before(a: Node, b:Node) -> bool:
+    return (a.weight, a.symbol) < (b.weight, b.symbol)
     
 
 def pop_min(heap: list):
     pass
 
-def push(heap, LeafNode) -> list:
+def push(heap, Node) -> list:
     pass
 
 def check_min_heap_valid(heap: list) -> bool:
