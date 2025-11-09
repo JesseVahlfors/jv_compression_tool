@@ -1,6 +1,6 @@
-import pytest
 from compression_tool.build_tree import build_tree
-from compression_tool.tree import LeafNode, InternalNode
+from compression_tool.tree import Node, LeafNode, InternalNode
+import pytest
 
 def test_empty_tree():
     assert build_tree({}) == None
