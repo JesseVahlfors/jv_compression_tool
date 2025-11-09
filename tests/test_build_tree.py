@@ -18,4 +18,4 @@ def test_two_symbols():
 
 def test_small_multi_set():
     root = build_tree({97: 5, 98: 2, 99: 1})
-    assert root.weight == 8
+    assert root.weight == 8 

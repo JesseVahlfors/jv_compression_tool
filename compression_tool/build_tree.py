@@ -11,6 +11,6 @@ def build_tree(freq: dict[int, int]) -> Node | None:
 
     heap = build_min_heap(heap)
 
-    pass
+    return heap[0]
 
     
