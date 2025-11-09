@@ -17,3 +17,19 @@ def test_small_multi_set():
 def test_three_equals_total_only():
     root = build_tree({97: 1, 98: 1, 99: 1})
     assert root.weight == 3
+
+def test_root_weight_equals_sum():
+    freq = {97: 5, 98: 2, 99: 1, 100: 7}
+    root = build_tree(freq)
+    assert root.weight == sum(freq.values())
+
+@pytest.mark.parametrize("bad", [
+    {97: 0},
+    {97: -1},
+    {"a": 3},
+    {97: 2.5},
+])
+
+def test_input_validation(bad):
+    with pytest.raises(ValueError):
+        build_tree(bad)
