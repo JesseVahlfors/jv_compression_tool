@@ -1,4 +1,5 @@
 import pytest
+import itertools
 from compression_tool.code_map import build_code_map
 from compression_tool.build_tree import build_tree
 
@@ -31,3 +32,27 @@ def test_tie_break():
 
     assert len(map[97]) == 1 and len(map[98]) == 1
     assert map[97] == "0" and map[98] == "1"
+
+def test_three_symbols():
+    root = build_tree({97: 5, 98: 2, 99: 1})
+
+    map = build_code_map(root)
+
+    assert map.keys() == {97, 98, 99}
+    assert len(map[97]) == 1
+    assert len(map[98]) == 2 and len(map[99]) == 2
+    #check each pair of symbols their code is not a prefix of another
+    for a,b in itertools.combinations(map.values(),2):
+        assert not a.startswith(b)
+        assert not b.startswith(a)
+
+def test_four_symbols():
+    root = build_tree({97: 7, 98: 4, 99: 2, 100: 1})
+
+    map = build_code_map(root)
+    #heaviest symbol has the shortest code and lightest the longest code
+    for a,b in itertools.combinations(map.values(),2):
+        assert len(a) >= len(b)
+        assert not a.startswith(b)
+        assert not b.startswith(a)
+
