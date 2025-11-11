@@ -56,3 +56,7 @@ def test_four_symbols():
         assert not a.startswith(b)
         assert not b.startswith(a)
 
+def test_type_validation_raises():
+    with pytest.raises(TypeError, match="not a Node"):
+        build_code_map(42)
+
