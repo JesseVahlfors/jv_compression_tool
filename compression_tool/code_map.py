@@ -6,6 +6,8 @@ def build_code_map(node: Node) -> dict:
         return {}
     if not isinstance(node, Node):
         raise TypeError(f"root is not a Node instance: {node!r} ")
+    if node.is_leaf:
+        return {node.symbol: 0}
     map = {}
     prefix=''
 
