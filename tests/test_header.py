@@ -34,15 +34,16 @@ def test_decode_header_version_string():
     assert parsed.version == FULL_VERSION
     assert parsed.payload == codestring
 
-def test_decode_header_wrong_version_check():
-    codestring = "101001101"
-    header = "ZIP1|pad=3|freq=97:4,98:5,99:1|"
-    
-    with pytest.raises(ValueError):
-        decode_header(header + codestring)
+@pytest.mark.parametrize("invalid_version", [
+    "ZIP1",
+    "HUF",
+    "HUF-1",
+    "HUFFZAH"
+])
 
+def test_decode_header_wrong_version_check(invalid_version):
     codestring = "101001101"
-    header = "HUF1pad=3freq=97:4,98:5,99:1"
+    header = f"{invalid_version}|pad=3|freq=97:4,98:5,99:1|"
     
     with pytest.raises(ValueError):
         decode_header(header + codestring)
@@ -78,18 +79,43 @@ def test_decode_header_malformed_pad_field(malformed_pad):
         decode_header(header + codestring)
 
 @pytest.mark.parametrize("malformed_freq", [
-    "freq=",
     "freq= ",
     "freq=abc",
     "freq3",
     "freq-1",
-    "freq=98:",
-    "freq=:7"
 ])
 
 def test_decode_header_malformed_freq_field(malformed_freq):
     codestring = "101001101"
-    header = f"HUF1|pad=3|{malformed_freq}:4,98:5,99:1|"
+    header = f"HUF1|pad=3|{malformed_freq}|"
     
     with pytest.raises(ValueError):
         decode_header(header + codestring)
+
+@pytest.mark.parametrize("invalid_freq", [
+    "freq=98",
+    "freq=98:",
+    "freq=:7",
+    "freq=-9:7",
+    "freq=98:-7",
+    "freq=98:7,",
+    "freq=,98:7",
+    "freq=256:7",
+    "freq=97:0",
+    "freq=98:7:89"
+    "freq=98:7,98:3"
+])
+
+def test_decode_header_reject_bad_freq_range(invalid_freq):
+    codestring = "101001101"
+    header = f"HUF1|pad=3|{invalid_freq}|"
+    with pytest.raises(ValueError):
+        decode_header(header + codestring)
+
+def test_decode_header_valid_with_empty_freq():
+    codestring = "101001101"
+    header = "HUF1|pad=3|freq=|"
+    print(header)
+
+    parsed = decode_header(header + codestring)
+    assert parsed.freq == {}
