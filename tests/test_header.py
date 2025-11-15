@@ -102,7 +102,7 @@ def test_decode_header_malformed_freq_field(malformed_freq):
     "freq=,98:7",
     "freq=256:7",
     "freq=97:0",
-    "freq=98:7:89"
+    "freq=98:7:89",
     "freq=98:7,98:3"
 ])
 
