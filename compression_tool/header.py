@@ -1,16 +1,39 @@
 from typing import NamedTuple
+"""
+Header encoding/decoding for the Huffman compression tool.
+
+This module defines:
+- build_header(...)
+- decode_header(...)
+- HeaderInfo result type
+- Internal helper parsing functions
+"""
 
 NAME = "HUF"
 VERSION = 1
 FULL_VERSION = f"{NAME}{VERSION}"
 
 class HeaderInfo(NamedTuple):
+    """Parsed header information returned by decode_header()."""
     version: str
     pad_len: int
     freq: dict[int, int]
     payload: str
 
 def build_header(pad_len: int, freq: dict) -> str:
+    """
+    Build the header string for a compressed Huffman file.
+
+    Format:
+        HUF1|pad=<pad_len>|freq=<symbol:weight,...>|
+
+    Args:
+        pad_len: Number of padding bits at the end (0-7).
+        freq: Dict mapping symbol (0-255) to weight (>=1).
+
+    Returns:
+        Header string ending with a trailing '|'.
+    """
     pad = f"pad={pad_len}"
     
     freq_keys= sorted(freq.keys())
@@ -22,11 +45,36 @@ def build_header(pad_len: int, freq: dict) -> str:
 
     return header
 
-def decode_header(data: str)-> HeaderInfo:
-    if data.rfind("|") == -1:
+def decode_header(huff_string: str)-> HeaderInfo:
+    """
+    Decode the header and payload from a Huffman-compressed string.
+
+    The expected header format is:
+        HUF<version>|pad=<pad_len>|freq=<symbol:weight,...>|
+
+    Examples:
+        HUF1|pad=3|freq=97:4,98:5,99:1|101001101
+
+    Args:
+        huff_string: The full encoded string containing the header
+            followed by the Huffman-coded payload (as a bitstring).
+
+    Returns:
+        HeaderInfo: A NamedTuple containing
+            - version: full version string (e.g. "HUF1")
+            - pad_len: number of padding bits (0-7)
+            - freq: dict mapping symbols (0-255) to weights (>=1)
+            - payload: the raw codestring following the header
+
+    Raises:
+        ValueError: If the header is malformed or version, pad, or freq
+            values fail validation.
+    """
+
+    if huff_string.rfind("|") == -1:
         raise ValueError("Unknown header format")
     
-    header_fields, payload = _split_header_and_payload(data)
+    header_fields, payload = _split_header_and_payload(huff_string)
     version = header_fields[0]
     pad_field = header_fields[1]
     freq_string_field = header_fields[2]
@@ -37,10 +85,10 @@ def decode_header(data: str)-> HeaderInfo:
 
     return HeaderInfo(version, pad_len, freq, payload)
     
-def _split_header_and_payload(data: str) -> tuple[list[str], str]:
-    payload_idx = data.rfind("|")
-    header = data[:payload_idx]
-    payload = data[payload_idx +1 :]
+def _split_header_and_payload(huff_string: str) -> tuple[list[str], str]:
+    payload_idx = huff_string.rfind("|")
+    header = huff_string[:payload_idx]
+    payload = huff_string[payload_idx +1 :]
 
     fields = header.split("|")
     if len(fields) < 3:
