@@ -1,4 +1,4 @@
-feat(lookup): implement enough functionality to pass """ Reverse lookup table operations """
+""" Reverse lookup table operations """
 from compression_tool.code_map import build_code_map
 
 def build_lookup_table(code_map: dict[int, str]) -> dict[str, int]:
