@@ -20,7 +20,7 @@ class HeaderInfo(NamedTuple):
     freq: dict[int, int]
     payload: str
 
-def build_header(pad_len: int, freq: dict) -> str:
+def build_header(pad_len: int, freq: dict[int, int]) -> str:
     """
     Build the header string for a compressed Huffman file.
 
@@ -33,7 +33,24 @@ def build_header(pad_len: int, freq: dict) -> str:
 
     Returns:
         Header string ending with a trailing '|'.
+    
+    Raises:
+        ValueError: If the pad, or freq values fail validation.
     """
+
+    if not (0 <= pad_len <= 7):
+        raise ValueError(f"pad length out of range: {pad_len}")
+    
+    for symbol, weight in freq.items():
+        if not isinstance(symbol, int):
+            raise ValueError("symbol must be integer.")
+        if not isinstance(weight, int):
+            raise ValueError("weight must be integer.")
+        if not (0 <= symbol <= 255):
+            raise ValueError("symbol must be 0-255")
+        if weight < 1:
+            raise ValueError("weight must be >= 1. ")
+
     pad = f"pad={pad_len}"
     
     freq_keys= sorted(freq.keys())
@@ -70,9 +87,6 @@ def decode_header(huff_string: str)-> HeaderInfo:
         ValueError: If the header is malformed or version, pad, or freq
             values fail validation.
     """
-
-    if huff_string.rfind("|") == -1:
-        raise ValueError("Unknown header format")
     
     header_fields, payload = _split_header_and_payload(huff_string)
     version = header_fields[0]
@@ -119,7 +133,7 @@ def _parse_pad(pad_field: str) -> int:
     if pad_value == '':
         raise ValueError(f"pad length missing.")
     pad_len = int(pad_value)
-    if 0 > pad_len or pad_len > 7:
+    if not (0 <= pad_len <= 7):
         raise ValueError(f"pad length out of range: {pad_len}")
     return pad_len
 
