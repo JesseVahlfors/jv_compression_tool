@@ -9,7 +9,7 @@ def test_build_lookup_table_empty_dict():
 def test_build_lookup_table_one_symbol():
     code_map = {97: "101"}
 
-    assert build_lookup_table(code_map) == {"101", 97}
+    assert build_lookup_table(code_map) == {"101": 97}
 
 def test_build_lookup_table_duplicate_code():
     code_map = {97: "101", 99: "101"}
@@ -43,4 +43,5 @@ def test_lookup_symbol():
     Raises:
         KeyError: If no valid prefix exists at the given position.  
     """
+    raise ValueError
     #lookup_symbol(bitstream: str, index: int, table: dict[str, int])
