@@ -20,3 +20,21 @@ def test_pack_bits_length_not_multiple_of_8():
 
     assert bytes == b"@"
     assert pad_len == 5
+
+def test_pack_bits_multi_byte_string():
+    string = "0100000101000010"
+    bytes, pad_len = pack_bits(string)
+
+    assert bytes == b"AB"
+    assert pad_len == 0
+
+@pytest.mark.parametrize("invalids", [
+    "2",
+    "0102",
+    "abc",
+    "01 01",
+])
+
+def test_pack_bits_invalids_input(invalids):
+    with pytest.raises(ValueError):
+        pack_bits(invalids)
