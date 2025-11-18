@@ -1,4 +1,3 @@
-from typing import NamedTuple
 """
 Header encoding/decoding for the Huffman compression tool.
 
@@ -8,6 +7,7 @@ This module defines:
 - HeaderInfo result type
 - Internal helper parsing functions
 """
+from typing import NamedTuple
 
 NAME = "HUF"
 VERSION = 1

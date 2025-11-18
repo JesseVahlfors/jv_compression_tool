@@ -1,7 +1,25 @@
+""" Bit manipulation operations """
 
 def pack_bits(bits: str) -> tuple[bytes, int]:
+    """
+    Convert a bitstring into packed bytes.
+
+    The bitstream is padded with zero bits (if necessary) so its length is
+    divisible by 8. Each group of 8 bits is then converted into the
+    corresponding byte value.
+
+    Args:
+        bits: A string of '0' and '1' characters representing binary data.
+
+    Returns:
+        tuple:
+            bytes: The packed bytes produced from the bitstring.
+            pad_len: The number of zero bits added as padding (0-7).
+    """
     if bits == "":
         return (b"", 0)
+    if not set(bits).issubset({"0", "1"}):
+        raise ValueError("bits must contain only '0' and '1'")
     
     n = len(bits)
     if n % 8 == 0:
