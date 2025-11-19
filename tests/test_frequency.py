@@ -1,4 +1,4 @@
-from compression_tool.frequency import count_frequencies
+from compression_tool.frequency import build_frequency_table
 from pathlib import Path
 import pytest
 
@@ -10,11 +10,11 @@ def test_data():
 
 def test_frequency_with_static():
     data = b"aaabbc"
-    freq = count_frequencies(data)
+    freq = build_frequency_table(data)
     assert freq == {97: 3, 98: 2, 99: 1}  # ASCII values for 'a', 'b', 'c'
 
 def test_frequency_with_file(test_data):
-    freq = count_frequencies(test_data)
+    freq = build_frequency_table(test_data)
     
     expected = {
         ord('X'): 333,  # Replace 'X' with actual byte values from test.txt

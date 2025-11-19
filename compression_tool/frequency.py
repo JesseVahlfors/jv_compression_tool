@@ -1,6 +1,6 @@
 from collections import Counter
 
-def count_frequencies(data):
+def build_frequency_table(data):
     """
 Build a frequency table for Huffman compression.
 

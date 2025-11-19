@@ -1,5 +1,5 @@
 """code map building utilities."""
-from compression_tool.tree import Node, InternalNode
+from compression_tool.tree import Node
 
 
 def build_code_map(node: Node) -> dict[int, str]:
