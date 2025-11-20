@@ -13,7 +13,7 @@ def test_empty_tree():
 def test_single_symbol():
     root = build_tree({97: 5})
 
-    assert build_code_map(root) == {97: ""}
+    assert build_code_map(root) == {97: "0"}
 
 def test_two_symbols():
     root = build_tree({97: 3, 98: 2})

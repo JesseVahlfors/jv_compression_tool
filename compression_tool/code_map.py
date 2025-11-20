@@ -12,7 +12,7 @@ def build_code_map(node: Node) -> dict[int, str]:
 
     Special case:
         If the tree contains only a single symbol (a single leaf node),
-        the code assigned is the empty string "".
+        the code assigned is "0".
 
     Args: 
         node: The root node of a Huffman tree.
@@ -32,7 +32,7 @@ def build_code_map(node: Node) -> dict[int, str]:
         raise TypeError(f"root is not a Node instance: {node!r} ")
     
     if node.is_leaf:
-        return {node.symbol: ""}
+        return {node.symbol: "0"}
     
     code_map: dict[int, str] = {}
 
