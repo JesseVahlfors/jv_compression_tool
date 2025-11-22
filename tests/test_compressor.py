@@ -5,8 +5,11 @@ from compression_tool.header import build_header, decode_header_and_payload
 
 def test_compress_empty_data():
     data = compress(b"")
+
+    header = build_header(0, {})
+    expected_data = header.encode("utf-8")
     
-    assert data == build_header(0, {})
+    assert data == expected_data
 
 def test_compress_single_symbol():
     result = compress(b"A")
