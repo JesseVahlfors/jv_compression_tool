@@ -1,7 +1,7 @@
 import pytest
 from compression_tool.compressor import compress
 from compression_tool.utils.bitutils import pack_bits
-from compression_tool.header import build_header, decode_header
+from compression_tool.header import build_header, decode_header_and_payload
 
 def test_compress_empty_data():
     data = compress(b"")
@@ -18,11 +18,8 @@ def test_compress_single_symbol():
 
 def test_compress_multiple_symbols():
     compressed = compress(b"AAB")
-    separator_idx = compressed.rfind(b"|")
-    header_bytes = compressed[:separator_idx + 1]
-    body_bytes = compressed[separator_idx + 1:]
-    header_str = header_bytes.decode("utf-8")
-    _ ,pad_len , freq = decode_header(header_str) 
+    header_info, body_bytes = decode_header_and_payload(compressed)
+    _, pad_len, freq = header_info
 
     assert freq == {65: 2, 66: 1}
     assert 0 <= pad_len <= 7 
