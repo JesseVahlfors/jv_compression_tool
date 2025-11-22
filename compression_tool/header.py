@@ -18,7 +18,6 @@ class HeaderInfo(NamedTuple):
     version: str
     pad_len: int
     freq: dict[int, int]
-    payload: str
 
 def build_header(pad_len: int, freq: dict[int, int]) -> str:
     """
@@ -62,33 +61,64 @@ def build_header(pad_len: int, freq: dict[int, int]) -> str:
 
     return header
 
-def decode_header(huff_string: str)-> HeaderInfo:
+def decode_header_and_payload(data: bytes) -> tuple[HeaderInfo, bytes]:
     """
-    Decode the header and payload from a Huffman-compressed string.
+    Parse the header from a compressed byte stream and return
+    (header_info, body_bytes).
+    """
+    header_end = None
+    n_divider = 0
+    for idx, byte in enumerate(data):
+        if byte == ord("|"):
+            n_divider +=1
+            if n_divider == 3:
+                header_end = idx + 1
+                break
+
+    if n_divider < 3:
+        raise ValueError("Incomplete or malformed header: expected 3 '|' separators")
+
+    if header_end is None:
+        raise ValueError("Incomplete header: did not find 3 separators")
+
+    header_bytes = data[:header_end]
+    header_str = header_bytes.decode("utf-8")
+    body_bytes = data[header_end:]
+
+    header_info = decode_header(header_str)
+
+    return header_info, body_bytes
+
+
+
+def decode_header(header: str)-> HeaderInfo:
+    """
+    Decode the header from a Huffman-compressed string.
 
     The expected header format is:
         HUF<version>|pad=<pad_len>|freq=<symbol:weight,...>|
 
     Examples:
-        HUF1|pad=3|freq=97:4,98:5,99:1|101001101
+        HUF1|pad=3|freq=97:4,98:5,99:1|
 
     Args:
-        huff_string: The full encoded string containing the header
-            followed by the Huffman-coded payload (as a bitstring).
+        header: string containing the version, padding and frequency set.
 
     Returns:
         HeaderInfo: A NamedTuple containing
             - version: full version string (e.g. "HUF1")
             - pad_len: number of padding bits (0-7)
             - freq: dict mapping symbols (0-255) to weights (>=1)
-            - payload: the raw codestring following the header
 
     Raises:
         ValueError: If the header is malformed or version, pad, or freq
             values fail validation.
     """
+
+    header_fields = header.split("|")
+    if len(header_fields) < 3:
+        raise ValueError("Unknown header format")
     
-    header_fields, payload = _split_header_and_payload(huff_string)
     version = header_fields[0]
     pad_field = header_fields[1]
     freq_string_field = header_fields[2]
@@ -97,17 +127,8 @@ def decode_header(huff_string: str)-> HeaderInfo:
     pad_len = _parse_pad(pad_field)
     freq = _parse_freq(freq_string_field)
 
-    return HeaderInfo(version, pad_len, freq, payload)
+    return HeaderInfo(version, pad_len, freq)
     
-def _split_header_and_payload(huff_string: str) -> tuple[list[str], str]:
-    payload_idx = huff_string.rfind("|")
-    header = huff_string[:payload_idx]
-    payload = huff_string[payload_idx +1 :]
-
-    fields = header.split("|")
-    if len(fields) < 3:
-        raise ValueError("Unknown header format")
-    return fields, payload
 
 def _parse_version(version):
     if len(version) < 4: 
