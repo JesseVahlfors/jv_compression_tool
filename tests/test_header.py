@@ -1,19 +1,28 @@
 import pytest
-from compression_tool.header import build_header, decode_header, HeaderInfo, FULL_VERSION
-
+from compression_tool.header import build_header, decode_header, HeaderInfo, FULL_VERSION, decode_header_and_payload
+from compression_tool.utils.bitutils import pack_bits, unpack_bits
 
 def test_header_io():
-    pad_len = 3
     freq = {97: 4, 98: 5, 99: 1}
     codestring = "101001101"
 
-    header = build_header(pad_len, freq)
-    parsed = decode_header(header + codestring)
+    body_bytes, pad_len = pack_bits(codestring)
 
-    assert parsed.version == FULL_VERSION
-    assert parsed.pad_len == 3
-    assert parsed.freq == {97: 4, 98: 5, 99: 1}
-    assert parsed.payload == codestring
+    header_str = build_header(pad_len, freq)
+    header_bytes = header_str.encode("utf-8")
+
+    data = header_bytes + body_bytes
+
+    header_info, parsed_body = decode_header_and_payload(data)
+
+    assert header_info.version == FULL_VERSION
+    assert header_info.pad_len == pad_len
+    assert header_info.freq == freq
+
+    assert parsed_body == body_bytes
+
+    restored_codestring = unpack_bits(parsed_body, pad_len)
+    assert restored_codestring == codestring
 
 def test_build_header_string():
     pad_len = 3
@@ -23,16 +32,41 @@ def test_build_header_string():
 
     assert header == "HUF1|pad=3|freq=97:4,98:5,99:1|"
 
+def test_decode_header_and_payload_io():
+    pad_len = 5
+    freq = {65: 2, 66: 1}
+    fake_body = b"\x80\x55"
+
+    header_str = build_header(pad_len, freq)
+    header_bytes = header_str.encode("utf-8")
+    header_info, body_bytes = decode_header_and_payload(header_bytes + fake_body)
+
+    assert header_info.version == "HUF1"
+    assert header_info.pad_len == 5
+    assert header_info.freq == {65:2, 66:1}
+    assert body_bytes == fake_body
+
+def test_decode_header_and_payload_empty_input():
+    header_str = build_header(0, {})
+    header_bytes = header_str.encode("utf-8")
+    data = header_bytes
+
+    header_info, body_bytes = decode_header_and_payload(data)
+
+    assert header_info.version == "HUF1"
+    assert header_info.pad_len == 0
+    assert header_info.freq == {}
+    assert body_bytes == b""  # empty body
+
+
 def test_decode_header_version_string():
     pad_len = 3
     freq = {97: 4, 98: 5, 99: 1}
-    codestring = "101001101"
 
     header = build_header(pad_len, freq)
-    parsed = decode_header(header + codestring)
+    parsed = decode_header(header)
 
     assert parsed.version == FULL_VERSION
-    assert parsed.payload == codestring
 
 @pytest.mark.parametrize("invalid_version", [
     "ZIP1",
@@ -42,11 +76,10 @@ def test_decode_header_version_string():
 ])
 
 def test_decode_header_wrong_version_check(invalid_version):
-    codestring = "101001101"
     header = f"{invalid_version}|pad=3|freq=97:4,98:5,99:1|"
     
     with pytest.raises(ValueError):
-        decode_header(header + codestring)
+        decode_header(header)
 
 @pytest.mark.parametrize("invalid_pad", [
     "pad=ab",
@@ -56,11 +89,10 @@ def test_decode_header_wrong_version_check(invalid_version):
 ])
 
 def test_decode_header_reject_bad_pad_range(invalid_pad):
-    codestring = "101001101"
     header = f"HUF1|{invalid_pad}|freq=97:4,98:5,99:1|"
     
     with pytest.raises(ValueError):
-        decode_header(header + codestring)
+        decode_header(header)
 
 
 @pytest.mark.parametrize("malformed_pad", [
@@ -72,11 +104,10 @@ def test_decode_header_reject_bad_pad_range(invalid_pad):
 ])
 
 def test_decode_header_malformed_pad_field(malformed_pad):
-    codestring = "101001101"
     header = f"HUF1|{malformed_pad}|freq=97:4,98:5,99:1|"
     
     with pytest.raises(ValueError):
-        decode_header(header + codestring)
+        decode_header(header)
 
 @pytest.mark.parametrize("malformed_freq", [
     "freq= ",
@@ -86,11 +117,10 @@ def test_decode_header_malformed_pad_field(malformed_pad):
 ])
 
 def test_decode_header_malformed_freq_field(malformed_freq):
-    codestring = "101001101"
     header = f"HUF1|pad=3|{malformed_freq}|"
     
     with pytest.raises(ValueError):
-        decode_header(header + codestring)
+        decode_header(header)
 
 @pytest.mark.parametrize("invalid_freq", [
     "freq=98",
@@ -107,15 +137,12 @@ def test_decode_header_malformed_freq_field(malformed_freq):
 ])
 
 def test_decode_header_reject_bad_freq_range(invalid_freq):
-    codestring = "101001101"
     header = f"HUF1|pad=3|{invalid_freq}|"
     with pytest.raises(ValueError):
-        decode_header(header + codestring)
+        decode_header(header)
 
 def test_decode_header_valid_with_empty_freq():
-    codestring = "101001101"
     header = "HUF1|pad=3|freq=|"
-    print(header)
 
-    parsed = decode_header(header + codestring)
+    parsed = decode_header(header)
     assert parsed.freq == {}
