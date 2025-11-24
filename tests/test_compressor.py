@@ -1,6 +1,5 @@
 import pytest
 from compression_tool.compressor import compress
-from compression_tool.utils.bitutils import pack_bits
 from compression_tool.header import build_header, decode_header_and_payload
 
 def test_compress_empty_data():
