@@ -37,7 +37,8 @@ def build_tree(freq: dict[int, int]) -> Node | None:
         
     
     heap = []
-    for sym, wt in freq.items():
+    for sym in sorted(freq.keys()):
+        wt = freq[sym]
         heap_push(heap, LeafNode(symbol=sym, weight=wt))
 
     build_min_heap(heap)
