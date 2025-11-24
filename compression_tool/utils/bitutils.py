@@ -42,7 +42,7 @@ def pack_bits(bits: str) -> tuple[bytes, int]:
 
 def unpack_bits(data: bytes, pad_len: int) -> str:
     """
-    Convert a bitstring into packed bytes.
+    Convert packed bytes into a bitstring.
 
     The bytes object is converted back into a bitstring and
     the zero bit padding is removed.
@@ -51,9 +51,8 @@ def unpack_bits(data: bytes, pad_len: int) -> str:
         bytes: The packed bytes (Huffman-coded payload)
         pad_len: The number of zero bits added as padding (0-7).
 
-    Returns:
-        tuple: 
-            bits: A string of '0' and '1' characters representing binary data.
+    Returns: 
+            bitstring: A string of '0' and '1' characters representing binary data.
     """
     if data == b"":
         if pad_len != 0:
