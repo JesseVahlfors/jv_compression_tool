@@ -5,6 +5,11 @@ This module ties together header decoding, Huffman tree reconstruction,
 bit unpacking, and code lookup to turn a compressed byte stream back
 into the original raw bytes.
 """
+from compression_tool.header import decode_header_and_payload, decode_header
+from compression_tool.build_tree import build_tree
+from compression_tool.code_map import build_code_map
+from compression_tool.lookup import build_lookup_table, lookup_symbol
+from compression_tool.utils.bitutils import unpack_bits
 
 def decompress(data: bytes) -> bytes:
     """
@@ -27,4 +32,20 @@ def decompress(data: bytes) -> bytes:
     Returns:
         A bytes object containing the fully decompressed original payload.
     """
-    return None
+    header, body_bytes = decode_header_and_payload(data)
+    if body_bytes == b"":
+        return b""
+    
+    _, pad_len, freq = header
+    root = build_tree(freq)
+    code_map = build_code_map(root)
+    lookup_table = build_lookup_table(code_map)
+    bitstring = unpack_bits(body_bytes, pad_len)
+    bytes_list =[]
+    idx = 0
+    while idx < (len(bitstring)):
+        symbol, length = lookup_symbol(bitstring, idx , lookup_table)
+        bytes_list.append(symbol)
+        idx += length
+
+    return bytes(bytes_list)
