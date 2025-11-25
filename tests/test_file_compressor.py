@@ -1,20 +1,56 @@
-from unittest.mock import patch
+RUN_SLOW_TESTS = False
+
 import pytest
 from compression_tool.file_compressor import compress_file
-import tempfile
-import os
+from compression_tool.file_decompressor import decompress_file
+from pathlib import Path
 
 def test_file_compressor_reads_and_writes(tmp_path):
-    input_file = tmp_path / "input.txt"
+    input_file = tmp_path / "example.txt"
+    original_data = b"hello world"
+    input_file.write_bytes(original_data)
 
-    input_file.write_bytes(b"compress me")
+    comp_result = compress_file(input_file)
+    assert comp_result.input_path == input_file
+    assert comp_result.output_path.exists()
 
-    # Mock the compress function to test I/O without actual compression logic
-    with patch("compression_tool.file_compressor.compress", return_value=b"COMPRESSED") as mock_compress:
-        compress_file(input_file)
-        # Ensure the compress function was called with correct data
-        mock_compress.assert_called_once_with(b"compress me")
+    decomp_result = decompress_file(comp_result.output_path)
+    assert decomp_result.output_path.exists()
+    assert decomp_result.output_path.read_bytes() == original_data
 
-    result = (input_file.with_suffix('.huff')).read_bytes()
-    assert result == b"COMPRESSED"
-    assert os.path.exists(input_file.with_suffix('.huff'))
+def test_large_repetitive_file_compresses(tmp_path):
+    input_file = tmp_path / "big.txt"
+    # Very biased and large input
+    original_data = (b"hello world " * 1000)
+    input_file.write_bytes(original_data)
+
+    comp_result = compress_file(input_file)
+
+    assert comp_result.compressed_size < comp_result.original_size
+
+LES_MIS = Path("tests/data/test.txt")
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    not RUN_SLOW_TESTS,
+    reason="Slow test disabled",
+)
+def test_les_mis_roundtrip(tmp_path):
+    src = tmp_path / "test.txt"
+    src.write_bytes(LES_MIS.read_bytes())
+
+    comp = compress_file(src)
+
+    decomp = decompress_file(comp.output_path)
+
+    original_bytes = src.read_bytes()
+    roundtrip_bytes = decomp.output_path.read_bytes()
+
+    assert roundtrip_bytes == original_bytes
+    assert comp.compressed_size < comp.original_size
+
+    print(
+        f"Les Mis original: {len(original_bytes)} bytes,"
+        f"compressed: {comp.compressed_size} bytes",
+        f"ratio: {comp.compressed_size / len(original_bytes):.3f}"
+    )
