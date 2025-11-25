@@ -125,17 +125,19 @@ jv_compression_tool/
 This project currently uses a simple text-based header:
 
 ```
-<PAD>|<symbol1>:<freq1>|<symbol2>:<freq2>|...||
+HUF1|pad=<pad_len>|freq=symbol:weight,...|
 ```
 
-- PAD = number of padding bits at the end
-- Symbols stored as ASCII integers
-- Ends with || for easy parsing
+- `HUF1` = Magic string + version tag for this header format.
+- `pad` = Number of padding bits at the end of the compressed data.
+- `freq` = Frequency table, where each symbol is represented as `<symbol>:<weight>`.
+- Each symbol is stored as its integer byte value (e.g. `104` = ASCII `"h"`).
+- Ends with `|` for easy parsing.
 
-Example:
+### Example:
 
 ```
-3|104:1|101:1|108:3|111:2||
+HUF1|pad=3|freq=104:1,101:1,108:3,111:2|
 ```
 
 A binary header format may be introduced later.
@@ -149,7 +151,6 @@ Run all tests:
 ```bash
 pytest
 ```
-
 
 Run fast tests only:
 
