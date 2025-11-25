@@ -1,6 +1,5 @@
-import pytest
-from compression_tool.compressor import compress
-from compression_tool.header import build_header, decode_header_and_payload
+from src.compression_tool.compressor import compress
+from src.compression_tool.header import build_header, decode_header_and_payload
 
 def test_compress_empty_data():
     data = compress(b"")

@@ -1,4 +1,4 @@
-from compression_tool.frequency import build_frequency_table
+from src.compression_tool.frequency import build_frequency_table
 from pathlib import Path
 import pytest
 

@@ -1,8 +1,8 @@
 RUN_SLOW_TESTS = False
 
 import pytest
-from compression_tool.file_compressor import compress_file
-from compression_tool.file_decompressor import decompress_file
+from src.compression_tool.file_compressor import compress_file
+from src.compression_tool.file_decompressor import decompress_file
 from pathlib import Path
 
 def test_file_compressor_reads_and_writes(tmp_path):

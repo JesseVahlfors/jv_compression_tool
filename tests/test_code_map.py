@@ -1,7 +1,7 @@
 import pytest
 import itertools
-from compression_tool.code_map import build_code_map
-from compression_tool.build_tree import build_tree
+from src.compression_tool.code_map import build_code_map
+from src.compression_tool.build_tree import build_tree
 
 # Left=0, right=1; node ordering is defined by comes_before (weight, then symbol). 
 # Ties → lower symbol goes left (=‘0’).

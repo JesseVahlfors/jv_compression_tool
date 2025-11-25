@@ -1,5 +1,5 @@
 import pytest
-from compression_tool.utils.bitutils import pack_bits, unpack_bits
+from src.compression_tool.utils.bitutils import pack_bits, unpack_bits
 
 def test_pack_bits_empty_string():
     bits, pad_len = pack_bits("")

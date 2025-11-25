@@ -1,5 +1,5 @@
-from compression_tool.utils.heapify import build_min_heap, sift_down, comes_before, check_min_heap_valid, sift_up, pop_min, heap_push
-from compression_tool.tree import Node, LeafNode, InternalNode
+from src.compression_tool.utils.heapify import build_min_heap, sift_down, comes_before, check_min_heap_valid, sift_up, pop_min, heap_push
+from src.compression_tool.tree import Node, LeafNode, InternalNode
 import pytest
 
 #Node constructor

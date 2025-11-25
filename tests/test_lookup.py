@@ -1,5 +1,5 @@
 import pytest
-from compression_tool.lookup import build_lookup_table, lookup_symbol
+from src.compression_tool.lookup import build_lookup_table, lookup_symbol
 
 def test_build_lookup_table_empty_dict():
     code_map = {}

@@ -1,4 +1,4 @@
-from compression_tool.tree import Node, LeafNode, InternalNode
+from src.compression_tool.tree import Node, LeafNode, InternalNode
 
 def test_node_initialization():
     node = Node(weight=5)
