@@ -1,5 +1,5 @@
-from src.compression_tool.build_tree import build_tree
-from src.compression_tool.tree import Node, LeafNode, InternalNode
+from compression_tool.build_tree import build_tree
+from compression_tool.tree import Node, LeafNode, InternalNode
 import pytest
 
 def test_empty_tree():

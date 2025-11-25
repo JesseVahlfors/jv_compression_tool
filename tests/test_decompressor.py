@@ -1,5 +1,5 @@
-from src.compression_tool.compressor import compress
-from src.compression_tool.decompressor import decompress
+from compression_tool.compressor import compress
+from compression_tool.decompressor import decompress
 import os
 
 def test_decompressor_empty_data():

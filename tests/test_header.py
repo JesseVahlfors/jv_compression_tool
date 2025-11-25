@@ -1,6 +1,12 @@
 import pytest
-from src.compression_tool.header import build_header, decode_header, HeaderInfo, FULL_VERSION, decode_header_and_payload
-from src.compression_tool.utils.bitutils import pack_bits, unpack_bits
+from compression_tool.header import (
+    build_header,
+    decode_header,
+    HeaderInfo,
+    FULL_VERSION,
+    decode_header_and_payload,
+)
+from compression_tool.utils.bitutils import pack_bits, unpack_bits
 
 def test_header_io():
     freq = {97: 4, 98: 5, 99: 1}
