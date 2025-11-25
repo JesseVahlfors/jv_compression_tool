@@ -20,7 +20,6 @@ def test_file_compressor_reads_and_writes(tmp_path):
 
 def test_large_repetitive_file_compresses(tmp_path):
     input_file = tmp_path / "big.txt"
-    # Very biased and large input
     original_data = (b"hello world " * 1000)
     input_file.write_bytes(original_data)
 
