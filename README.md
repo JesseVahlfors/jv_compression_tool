@@ -4,14 +4,14 @@ A lightweight, fully tested Huffman compression library with both byte-level and
 
 This project implements a complete Huffman compression pipeline from scratch, including:
 
-- Frequency counting
-- Min-heap construction
-- Huffman tree generation
-- Code map building
-- Bit packing/unpacking
-- Header encoding/decoding
-- High-level compression & decompression functions
-- File-based compressor and decompressor
+- Frequency counting  
+- Min-heap construction  
+- Huffman tree generation  
+- Code map building  
+- Bit packing/unpacking  
+- Header encoding/decoding  
+- High-level compression & decompression  
+- File-based compressor and decompressor  
 - Full test suite (unit + integration)
 
 The goal is to provide a clear, modular reference implementation that is easy to study, extend, and reuse — including on a future demo page.
@@ -20,31 +20,29 @@ The goal is to provide a clear, modular reference implementation that is easy to
 
 ## ✨ Features
 
-- 🔧 **Pure Python implementation**
-- 🧪 **Fully tested with pytest**
-- 📄 **File compression support**
-- 🔁 **Round-trip safe**
+- 🔧 **Pure Python implementation**  
+- 🧪 **Fully tested with pytest**  
+- 📄 **File compression support**  
+- 🔁 **Round-trip safe**  
 - 📦 **Simple API**:
-  - `compress_bytes(data: bytes)`
-  - `decompress_bytes(data: bytes)`
-  - `compress_file(path)`
-  - `decompress_file(path)`
-- 🧩 **Modular internal architecture**
-- 🔌 **Ready for packaging to PyPI**
+  - `compress_bytes(data: bytes) -> bytes`
+  - `decompress_bytes(data: bytes) -> bytes`
+  - `compress_file(path) -> CompressionResult`
+  - `decompress_file(path) -> DecompressionResult`
+- 🧩 **Modular internal structure**  
+- 📦 **Published as a PyPI package**
 
 ---
 
-## 🚀 Installation (Development)
+## 📦 Installation
 
-Clone the repo and install in editable mode:
+Install from PyPI:
 
 ```bash
-git clone https://github.com/JesseVahlfors/jv_compression_tool.git
-cd jv_compression_tool
-pip install -e .
+pip install jv-compression-tool
 ```
 
-Then you can import it anywhere:
+Then:
 
 ```python
 import compression_tool
@@ -54,46 +52,48 @@ import compression_tool
 
 ## 🧩 Usage
 
-1. Compressing bytes
+### 1. Compressing bytes
 
-   ```python
-   from compression_tool import compress_bytes, decompress_bytes
+```python
+from compression_tool import compress_bytes, decompress_bytes
 
-   data = b"hello world"
-   compressed = compress_bytes(data)
-   original = decompress_bytes(compressed)
+data = b"hello world"
+compressed = compress_bytes(data)
+restored = decompress_bytes(compressed)
 
-   assert original == data
-   ```
+assert restored == data
+```
 
-2. Compressing files
+### 2. Compressing files
 
-   ```python
-   from compression_tool import compress_file, decompress_file
+```python
+from compression_tool import compress_file, decompress_file
 
-   result = compress_file("example.txt")
+result = compress_file("example.txt")
 
-   print("Original size:", result.original_size)
-   print("Compressed size:", result.compressed_size)
+print("Original size:", result.original_size)
+print("Compressed size:", result.compressed_size)
 
-   decomp = decompress_file(result.output_path)
-   ```
+decomp = decompress_file(result.output_path)
+assert decomp.output_path.read_bytes() == Path("example.txt").read_bytes()
+```
 
-The file APIs return small dataclasses:
+The file APIs return simple dataclasses:
 
-- CompressionResult
-- DecompressionResult
+- `CompressionResult`
+- `DecompressionResult`
 
 ---
 
 ## 🧱 Project Structure
 
-Current recommended packaging structure:
+The project uses a `src/` layout for clean packaging:
 
 ```
 jv_compression_tool/
 ├── pyproject.toml
 ├── README.md
+├── LICENSE
 ├── src/
 │   └── compression_tool/
 │       ├── __init__.py
@@ -111,16 +111,21 @@ jv_compression_tool/
 │           ├── heapify.py
 │           └── bitutils.py
 └── tests/
-    ├── test_file_io.py
+    ├── test_header.py
+    ├── test_heapify.py
+    ├── test_build_tree.py
     ├── test_compressor.py
     ├── test_decompressor.py
+    ├── test_file_io.py
     └── data/
         └── test.txt
 ```
 
+(Test file names are illustrative — your exact structure may differ.)
+
 ---
 
-## Header Format
+## 🔍 Header Format
 
 This project currently uses a simple text-based header:
 
@@ -128,31 +133,37 @@ This project currently uses a simple text-based header:
 HUF1|pad=<pad_len>|freq=symbol:weight,...|
 ```
 
-- `HUF1` = Magic string + version tag for this header format.
-- `pad` = Number of padding bits at the end of the compressed data.
-- `freq` = Frequency table, where each symbol is represented as `<symbol>:<weight>`.
-- Each symbol is stored as its integer byte value (e.g. `104` = ASCII `"h"`).
-- Ends with `|` for easy parsing.
+- `HUF1` – Magic string + version tag  
+- `pad` – Number of padding bits added to the final byte  
+- `freq` – A comma-separated table of `<symbol>:<weight>`  
+- Symbols use their integer byte value (e.g. `104` = `b"h"`)
 
-### Example:
+### Example
 
 ```
 HUF1|pad=3|freq=104:1,101:1,108:3,111:2|
 ```
 
-A binary header format may be introduced later.
+A more compact binary header format may be introduced later.
 
 ---
 
-## Development
+## 🛠 Development
+
+To set up a local development environment:
 
 ```bash
+git clone https://github.com/JesseVahlfors/jv_compression_tool.git
+cd jv_compression_tool
+
 python -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\activate          # or: source .venv/Scripts/activate
+
 pip install -r requirements.txt
 pip install -e .
-pytest
 ```
+
+---
 
 ## 🧪 Testing
 
@@ -162,13 +173,13 @@ Run all tests:
 pytest
 ```
 
-Run fast tests only:
+Run fast tests only (skipping slow ones):
 
 ```bash
 pytest -m "not slow"
 ```
 
-Slow tests (e.g., large Les Mis file) are marked:
+Slow tests (e.g., using a large “Les Misérables” file) are marked:
 
 ```python
 @pytest.mark.slow
@@ -177,27 +188,27 @@ Slow tests (e.g., large Les Mis file) are marked:
 
 ---
 
-## 📈 Performance
+## 📈 Performance Notes
 
-Huffman compression becomes effective when:
+Huffman compression works best when:
 
-- Input is large
-- Symbol distribution is skewed
-- Repetition exists
+- Input is large  
+- Symbol distribution is uneven  
+- Repetition exists in the data  
 
-Small files may grow slightly due to header overhead — this is normal.
+Small files may grow slightly due to header overhead — this is expected.
 
 ---
 
 ## 🗺 Future Improvements
 
-- CLI tool (huff compress file.txt)
+- CLI tool (e.g., `huff compress file.txt`)
 - Binary header format
 - Streaming compression
-- Publish to PyPI
+- Web/demo integration
 
 ---
 
 ## 📜 License
 
-MIT License.
+Licensed under the [MIT License](LICENSE).
