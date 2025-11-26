@@ -21,3 +21,5 @@ tests/data/test.txt
 dist/
 build/
 *.egg-info/
+PKG-INFO
+SOURCES.txt
