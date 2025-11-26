@@ -154,7 +154,6 @@ pip install -e .
 pytest
 ```
 
-
 ## 🧪 Testing
 
 Run all tests:

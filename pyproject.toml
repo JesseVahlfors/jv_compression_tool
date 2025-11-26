@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jv-compression-tool"
-version = "0.1.1"
+version = "0.1.2"
 description = "Huffman compression implemented in pure Python."
 readme = "README.md"
 requires-python = ">=3.11"
