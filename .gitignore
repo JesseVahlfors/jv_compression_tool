@@ -13,3 +13,11 @@ env/
 
 # Environment variables
 .env
+
+# test file
+tests/data/test.txt
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
