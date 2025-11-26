@@ -144,6 +144,17 @@ A binary header format may be introduced later.
 
 ---
 
+## Development
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+pip install -e .
+pytest
+```
+
+
 ## 🧪 Testing
 
 Run all tests:
